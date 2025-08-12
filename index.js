@@ -51,7 +51,7 @@ app.get('/links', (req, res) => {
       return res.status(500).json({ error: 'Failed to fetch links' });
     }
     const links = rows.map(row => ({
-      shortUrl: `${req.get('x-forwarded-proto') || req.protocol}://${req.get('x-forwarded-host') || req.get('host')}/${row.short_code}`,
+      shortUrl: `${req.get('referer')}${row.short_code}`,
       longUrl: row.long_url,
       createdAt: row.created_at
     }));
@@ -85,7 +85,7 @@ app.post('/shorten', (req, res) => {
         console.error(err);
         return res.status(500).json({ error: 'Failed to create short link.' });
       }
-    const fullShortUrl = `${req.get('x-forwarded-proto') || req.protocol}://${req.get('x-forwarded-host') || req.get('host')}/${shortCode}`;
+    const fullShortUrl = `${req.get('referer')}/${shortCode}`;
     res.status(201).json({ shortUrl: fullShortUrl, shortCode });
     });
   });
